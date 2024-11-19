@@ -69,7 +69,7 @@ export const signup = async (req, res) => {
 }
 export const login = async (req, res) => {
     try {
-        const { username, password } = req.body();
+        const { username, password } = req.body;
         const user = await User.findOne({username})
         if (!user){
             return res.status(400).json({message: "Invalid Credentials"})
@@ -94,7 +94,7 @@ export const login = async (req, res) => {
 
     } catch (error) {
 
-        console.error("Error is login controller", error);
+        console.error("Error in login controller", error);
         res.status(500).json({message: "Server Error"})
         
     }
