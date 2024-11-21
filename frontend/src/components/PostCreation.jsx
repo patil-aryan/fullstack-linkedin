@@ -18,7 +18,7 @@ const PostCreation = ({ user }) => {
       return res.data;
     },
     onSuccess: () => {
-      resetForm();  
+      resetForm();
       toast.success("Post created successfully");
       queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
@@ -29,6 +29,16 @@ const PostCreation = ({ user }) => {
 
   const handlePostCreation = async () => {
     try {
+      if (!content.trim() && image) {
+        return toast.error(
+          "Please add some text content along with the image."
+        );
+      }
+
+      if (!content.trim() && !image) {
+        return toast.error("Please enter content or an image before posting");
+      }
+
       const postData = { content };
       if (image) postData.image = await readFileasDataUrl(image);
       createPost(postData);

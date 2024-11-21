@@ -39,6 +39,7 @@ const HomePage = () => {
   });
 
   console.log(recommendedUsers, posts);
+  console.log('Posts:', posts);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">

@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
     },
     headline: {
         type: String,
-        default: "LinkedIn User"
+        default: "Linkedin User"
     },
     skills: [String],
     location: {
