@@ -1,9 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader, Trash2 } from "lucide-react";
+import { Loader, MessageCircle, Share, Share2, ThumbsUp, Trash2 } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { axiosInstance } from "../libraries/axios";
+import PostAction from "./PostAction";
 
 const Post = ({ post }) => {
   const { data: authUser } = useQuery({ queryKey: ["authUser"] });
@@ -11,7 +12,7 @@ const Post = ({ post }) => {
   const [comments, setComments] = useState(post.comments || []);
   const [newComment, setNewComment] = useState("");
   const isOwner = authUser?._id === post.author._id;
-  const isLiked = post.likes.includes(authUser?._id);
+  const isLiked = post.likes.includes(authUser._id);
 
   const queryClient = useQueryClient();
 
@@ -50,6 +51,7 @@ const Post = ({ post }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
+    //   queryClient.invalidateQueries({ queryKey: ["post", postId] });
     },
     onError: (error) => {
       toast.error(error.response.data.message || "Failed to like post");
@@ -147,6 +149,12 @@ const Post = ({ post }) => {
     );
   };
 
+  const handleLikePost = async () => {
+    if (isLikingPost) return;
+    likePost(); 
+
+  }
+
   return (
     <>
       <div className="bg-secondary rounded-lg shadow mb-4">
@@ -185,6 +193,24 @@ const Post = ({ post }) => {
           {post.image && (
             <img src={post.image} alt="Post Content" className="w-full rounded-lg mb-4" />
           )}
+
+          <div className="flex justify-between text-info">
+            <PostAction
+            icon={<ThumbsUp size={18} className={isLiked ? "text-blue-600 fill-blue-400" : ""}/>}
+            text={ `Like (${post.likes.length})`}
+            onClick={() => handleLikePost()}
+            />
+            
+            <PostAction
+            icon={<MessageCircle size={18} />}
+            text={ `Comment (${comments.length})`}
+            onClick={() => setShowComments(!showComments)}
+            />
+
+            <PostAction icon={<Share2 size={18}/>} text='Share'/>
+
+
+          </div>
         </div>
       </div>
     </>
