@@ -5,7 +5,9 @@ import { sendCommentNotification } from "../email/emailHandlers.js";
 
 export const getFeedPosts = async (req, res) => {
   try {
-    const posts = await Post.find({ author: { $in: [...req.user.connection, req.user._id]} })
+    const posts = await Post.find({
+      author: { $in: [...req.user.connection, req.user._id] },
+    })
       .populate("author", "name username profileImage, headline")
       .populate("comments.user", "name profileImage")
       .sort({ createdAt: -1 });
@@ -92,7 +94,7 @@ export const createComment = async (req, res) => {
     const postId = req.params.id;
     const { content } = req.body;
 
-    const post = await Post.findById(
+    const post = await Post.findByIdAndUpdate(
       postId,
       {
         $push: {
@@ -107,7 +109,7 @@ export const createComment = async (req, res) => {
       .populate("author", "name username email profileImage headline")
       .populate("comments.user", "name profileImage");
 
-    if (post.author.toString() !== req.user._id.toString()) {
+    if (post.author._id.toString() !== req.user._id.toString()) {
       const newNotification = new Notification({
         recipient: post.author,
         type: "comment",
@@ -118,18 +120,21 @@ export const createComment = async (req, res) => {
       await newNotification.save();
 
       try {
-        const postUrl = processs.env.CLIENT_URL + "/post/" + postId;
-        await sendCommentNotification(post.author, post.author.name, req.user.name, postUrl, content);
+        const postUrl = process.env.CLIENT_URL + "/post/" + postId;
+        await sendCommentNotification(
+          post.author.email,
+          post.author.name,
+          req.user.name,
+          postUrl,
+          content
+        );
       } catch (error) {
         console.error("Error in sendCommentNotification", error);
         res.status(500).json({ message: "Server Error" });
-        
       }
-
     }
 
     res.status(200).json(post);
-
   } catch (error) {
     console.error("Error in createComment Controller", error);
     res.status(500).json({ message: "Server Error" });
@@ -137,33 +142,35 @@ export const createComment = async (req, res) => {
 };
 
 export const likePost = async (req, res) => {
-    try {
-        const postId = req.params.id;
-        const post = await Post.findById(postId);
-        const userId = req.user._id;
+  try {
+    const postId = req.params.id;
+    const post = await Post.findById(postId);
+    const userId = req.user._id;
 
-        if (post.likes.includes(userId)) {
-            post.likes = post.likes.filter((id) => id.toString() !== userId.toString());
-    }else{
-        post.likes.push(userId);
+    if (post.likes.includes(userId)) {
+      post.likes = post.likes.filter(
+        (id) => id.toString() !== userId.toString()
+      );
+    } else {
+      post.likes.push(userId);
 
-        if (post.author.toString() !== userId.toString()) {
-            const newNotification = new Notification({
-                recipient: post.author,
-                type: "like",
-                relatedUser: userId,   
-                relatedPost: postId,    
-            });
+      if (post.author.toString() !== userId.toString()) {
+        const newNotification = new Notification({
+          recipient: post.author,
+          type: "like",
+          relatedUser: userId,
+          relatedPost: postId,
+        });
 
-            await newNotification.save();
+        await newNotification.save();
+      }
+
+   
     }
-
     await post.save();
-    }
-    
-    } catch (error) {
-        console.error("Error in likePost Controller", error);
-        res.status(500).json({ message: "Server Error" });
-        
-    }
-}
+    res.status(200).json(post);
+  } catch (error) {
+    console.error("Error in likePost Controller", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};

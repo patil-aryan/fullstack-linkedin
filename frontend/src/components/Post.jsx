@@ -1,12 +1,21 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader, MessageCircle, Share, Share2, ThumbsUp, Trash2 } from "lucide-react";
+import {
+  Loader,
+  MessageCircle,
+  Share,
+  Share2,
+  ThumbsUp,
+  Trash2,
+} from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { axiosInstance } from "../libraries/axios";
 import PostAction from "./PostAction";
+import { formatDistanceToNow } from "date-fns";
 
 const Post = ({ post }) => {
+  const { postId } = useParams();
   const { data: authUser } = useQuery({ queryKey: ["authUser"] });
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState(post.comments || []);
@@ -19,7 +28,6 @@ const Post = ({ post }) => {
   const { mutate: deletePost, isPending: isDeleting } = useMutation({
     mutationFn: async () => {
       await axiosInstance.delete(`/posts/delete/${post._id}`);
-      
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
@@ -30,9 +38,9 @@ const Post = ({ post }) => {
     },
   });
 
-  const { mutate: createComment, isPending: isCreatingComment } = useMutation({
+  const { mutate: createComment, isPending: isAddingComment } = useMutation({
     mutationFn: async (newComment) => {
-      await axiosInstance.post(`/posts/comment/${post._id}`, {
+      await axiosInstance.post(`/posts/${post._id}/comment`, {
         content: newComment,
       });
     },
@@ -51,7 +59,9 @@ const Post = ({ post }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
-    //   queryClient.invalidateQueries({ queryKey: ["post", postId] });
+      if (postId) {
+        queryClient.invalidateQueries({ queryKey: ["post", postId] });
+      }
     },
     onError: (error) => {
       toast.error(error.response.data.message || "Failed to like post");
@@ -151,9 +161,28 @@ const Post = ({ post }) => {
 
   const handleLikePost = async () => {
     if (isLikingPost) return;
-    likePost(); 
+    likePost();
+  };
 
-  }
+  const handleAddComment = async (e) => {
+    e.preventDefault();
+    if (newComment.trim()) {
+      createComment(newComment);
+      setNewComment("");
+      setComments([
+        ...comments,
+        {
+          content: newComment,
+          user: {
+            _id: authUser._id,
+            name: authUser.name,
+            profilePicture: authUser.profilePicture,
+          },
+          createdAt: new Date(),
+        },
+      ]);
+    }
+  };
 
   return (
     <>
@@ -191,27 +220,86 @@ const Post = ({ post }) => {
           </div>
           <p className="mb-4">{post.content}</p>
           {post.image && (
-            <img src={post.image} alt="Post Content" className="w-full rounded-lg mb-4" />
+            <img
+              src={post.image}
+              alt="Post Content"
+              className="w-full rounded-lg mb-4"
+            />
           )}
 
           <div className="flex justify-between text-info">
             <PostAction
-            icon={<ThumbsUp size={18} className={isLiked ? "text-blue-600 fill-blue-400" : ""}/>}
-            text={ `Like (${post.likes.length})`}
-            onClick={() => handleLikePost()}
+              icon={
+                <ThumbsUp
+                  size={18}
+                  className={isLiked ? "text-blue-600 fill-blue-400" : ""}
+                />
+              }
+              text={`Like (${post.likes.length})`}
+              onClick={() => handleLikePost()}
             />
-            
+
             <PostAction
-            icon={<MessageCircle size={18} />}
-            text={ `Comment (${comments.length})`}
-            onClick={() => setShowComments(!showComments)}
+              icon={<MessageCircle size={18} />}
+              text={`Comment (${comments.length})`}
+              onClick={() => setShowComments(!showComments)}
             />
 
-            <PostAction icon={<Share2 size={18}/>} text='Share'/>
-
-
+            <PostAction icon={<Share2 size={18} />} text="Share" />
           </div>
         </div>
+
+        {showComments && (
+          <div className="px-4 pb-4">
+            <div className="mb-4 max-h-60 overflow-y-auto">
+              {comments.map((comment) => (
+                <div
+                  key={comment._id}
+                  className="mb-2 bg-base-100 p-2 rounded flex items-start"
+                >
+                  <img
+                    src={comment.user.profilePicture || "/avatar.png"}
+                    alt={comment.user.name}
+                    className="w-8 h-8 rounded-full mr-2 flex-shrink-0"
+                  />
+                  <div className="flex-grow">
+                    <div className="flex items-center mb-1">
+                      <span className="font-semibold mr-2">
+                        {comment.user.name}
+                      </span>
+                      <span className="text-xs text-info">
+                        {formatDistanceToNow(new Date(comment.createdAt))}
+                      </span>
+                    </div>
+                    <p>{comment.content}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <form onSubmit={handleAddComment} className="flex items-center">
+              <input
+                type="text"
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Add a comment..."
+                className="flex-grow p-2 rounded-l-full bg-base-100 focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+
+              <button
+                type="submit"
+                className="bg-primary text-white p-2 rounded-r-full hover:bg-primary-dark transition duration-300"
+                disabled={isAddingComment}
+              >
+                {isAddingComment ? (
+                  <Loader size={18} className="animate-spin" />
+                ) : (
+                  <Send size={18} />
+                )}
+              </button>
+            </form>
+          </div>
+        )}
       </div>
     </>
   );
