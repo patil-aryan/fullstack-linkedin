@@ -4,7 +4,7 @@ import { acceptConnectionRequest, getConnectionRequests, getConnectionStatus, re
 
 const router = express.Router();
 
-router.post("/request", protectRoute, sendConnectionRequest);
+router.post("/request/:userId", protectRoute, sendConnectionRequest);
 router.put("/accept/:requestId", protectRoute, acceptConnectionRequest);
 router.put("/reject/:requestId", protectRoute, rejectConnectionRequest);
 

@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { axiosInstance } from "../../libraries/axios";
 import { Link } from "react-router-dom";
 import { Bell, Home, Lock, LogOut, Search, User, Users } from "lucide-react";
+import { a } from "framer-motion/client";
 
 const Navbar = () => {
   const { data: authUser } = useQuery({
@@ -61,13 +62,18 @@ const Navbar = () => {
                   alt="LinkedIn"
                 />
               </Link>
-              <div className="flex justify-center">
-                <input
-                  type="text"
-                  placeholder="Search"
-                  className="bg-base-100 text-sm px-8 py-2 rounded focus:outline-none w-full max-w-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 transition-all duration-200"
-                />
-              </div>
+
+              {authUser && (
+                <>
+                  <div className="flex justify-center">
+                    <input
+                      type="text"
+                      placeholder="Search"
+                      className="bg-base-100 text-sm px-8 py-2 rounded focus:outline-none w-full max-w-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                    />
+                  </div>
+                </>
+              )}
             </div>
 
             <div className="flex items-center gap-2 md:gap-6">

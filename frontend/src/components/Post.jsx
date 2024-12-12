@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Loader,
   MessageCircle,
+  Send,
   Share,
   Share2,
   ThumbsUp,
@@ -203,6 +204,9 @@ const Post = ({ post }) => {
                   <h2 className="font-semibold text-lg">{post.author.name}</h2>
                 </Link>
                 <p className="text-xs text-info">{post.author.headline}</p>
+                <p className="text-xs text-info">
+                  {formatDistanceToNow(new Date(post.createdAt), {addSuffix: true})}
+                </p>
               </div>
             </div>
             {isOwner && (
@@ -277,7 +281,7 @@ const Post = ({ post }) => {
               ))}
             </div>
 
-            <form onSubmit={handleAddComment} className="flex items-center">
+            {/* <form onSubmit={handleAddComment} className="flex items-center">
               <input
                 type="text"
                 value={newComment}
@@ -290,6 +294,29 @@ const Post = ({ post }) => {
                 type="submit"
                 className="bg-primary text-white p-2 rounded-r-full hover:bg-primary-dark transition duration-300"
                 disabled={isAddingComment}
+              >
+                {isAddingComment ? (
+                  <Loader size={18} className="animate-spin" />
+                ) : (
+                  <Send size={18} />
+                )}
+              </button>
+            </form> */}
+            <form onSubmit={handleAddComment} className="flex items-center">
+              <input
+                type="text"
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Add a comment..."
+                className="flex-grow p-4 h-12 rounded-lg bg-base-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                style={{ borderRadius: "0.5rem" }} // Optional for boxier appearance
+              />
+
+              <button
+                type="submit"
+                className="bg-primary text-white p-4 h-12 rounded-lg ml-2 hover:bg-primary-dark transition duration-300 flex items-center justify-center"
+                disabled={isAddingComment}
+                style={{ borderRadius: "0.5rem" }} // Optional for boxier appearance
               >
                 {isAddingComment ? (
                   <Loader size={18} className="animate-spin" />

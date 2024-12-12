@@ -1,9 +1,11 @@
 import { sendConnectionAcceptedEmail } from "../email/emailHandlers.js";
 import ConnectionRequest from "../models/connection.model.js"
 import Notification from "../models/notification.model.js";
+import User from "../models/user.model.js";
+
 export const sendConnectionRequest = async (req, res) => {
     try {
-        const { recepient } = req.params;
+        const { userId } = req.params;
         const senderId = req.user._id;
         
         if (senderId.toString() === userId) {
@@ -41,6 +43,8 @@ export const sendConnectionRequest = async (req, res) => {
         res.status(500).json({ message: "Server Error" });
         
     }
+
+
 
 }
 
@@ -191,7 +195,7 @@ export const getConnectionStatus = async (req, res) => {
         const currentUser = req.user;
 
         if (currentUser.connection.includes(targetUserId)) {
-            return res.status(200).json({ message: "Connected" });
+            return res.status(200).json({ message: "connected" });
         } 
 
         const pendingRequest = await ConnectionRequest.findOne({
@@ -210,7 +214,8 @@ export const getConnectionStatus = async (req, res) => {
             }
         }
 
-        res.json({ message: "Not Connected" });
+        // res.json({ message: "Not Connected" });
+        res.json({ message: "not_connected" });
 
 
     } catch (error) {
