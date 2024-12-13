@@ -145,7 +145,7 @@ export const getConnectionRequests = async (req, res) => {
 
         const requests = await ConnectionRequest.find({ recepient: userId, status: "pending" }).populate("sender", "name username profileImage headline connection");
 
-        res.status(200).json({ requests });
+        res.status(200).json({requests});
     } catch (error) {
         
         console.error("Error in getConnectionRequests Controller", error);
@@ -195,7 +195,7 @@ export const getConnectionStatus = async (req, res) => {
         const currentUser = req.user;
 
         if (currentUser.connection.includes(targetUserId)) {
-            return res.status(200).json({ message: "connected" });
+            return res.status(200).json({ status: "connected" });
         } 
 
         const pendingRequest = await ConnectionRequest.findOne({
@@ -207,7 +207,7 @@ export const getConnectionStatus = async (req, res) => {
         });
 
         if (pendingRequest) {
-            if (pendingRequest.sender.toString() === currentUserId) {
+            if (pendingRequest.sender.toString() === currentUserId.toString()) {
                 return res.status(200).json({ status: "pending" });
             } else {
                 return res.status(200).json({ status: "received", requestId: pendingRequest._id });
@@ -215,7 +215,7 @@ export const getConnectionStatus = async (req, res) => {
         }
 
         // res.json({ message: "Not Connected" });
-        res.json({ message: "not_connected" });
+        res.json({ status: "not_connected" });
 
 
     } catch (error) {

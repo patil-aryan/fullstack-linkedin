@@ -125,7 +125,7 @@ const RecommendedUser = ({user}) => {
 
     console.log("handleConnect triggered!");
     console.log("Current connectionStatus:", connectionStatus);
-		if (connectionStatus?.data?.message === "not_connected") {
+		if (connectionStatus?.data?.status === "not_connected") {
       console.log("  if condition is true, calling sendConnectionRequest")
 			sendConnectionRequest(user._id)
 		}else {
