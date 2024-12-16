@@ -58,7 +58,7 @@ const userSchema = new mongoose.Schema({
         startYear: Number,
         endYear: Number
     }],
-    connection: [{
+    connections: [{
         type: mongoose.Schema.Types.ObjectId, ref: "User"
     }]
 },{timestamps: true})

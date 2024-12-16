@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { axiosInstance } from "../../libraries/axios";
 import { Link } from "react-router-dom";
-import { Bell, Home, Lock, LogOut, Search, User, Users } from "lucide-react";
+import { Bell, BriefcaseBusiness, Home, Lock, LogOut, Search, User, Users } from "lucide-react";
 import { a } from "framer-motion/client";
 
 const Navbar = () => {
@@ -104,10 +104,10 @@ const Navbar = () => {
                   </Link>
 
                   <Link
-                    to="/network"
+                    to="/jobs"
                     className="text-neutral flex flex-col items-center relative"
                   >
-                    <Lock size={20} />
+                    <BriefcaseBusiness size={20} />
                     <span className="text-xs hidden md:block">Jobs</span>
                   </Link>
 
