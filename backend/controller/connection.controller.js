@@ -13,7 +13,7 @@ export const sendConnectionRequest = async (req, res) => {
             
         }
 
-        if (req.user.connection.includes(userId)) {
+        if (req.user.connections.includes(userId)) {
             return res.status(400).json({ message: "You are already connected with this user" });
             
         }
@@ -72,11 +72,11 @@ export const acceptConnectionRequest = async (req, res) => {
 
         await request.save();
 
-        await User.findByIdAndUpdate(request.sender._id, {$addToSet: {connection: userId}});
-        await User.findByIdAndUpdate(userId, {$addToSet: {connection: request.sender._id}});
+        await User.findByIdAndUpdate(request.sender._id, {$addToSet: {connections: userId}});
+        await User.findByIdAndUpdate(userId, {$addToSet: {connections: request.sender._id}});
 
         const notification = new Notification({
-            recipient: request.sender._id,
+            recepient: request.sender._id,
             type: "connectionAccepted", 
             relatedUser: userId,
             
@@ -89,11 +89,11 @@ export const acceptConnectionRequest = async (req, res) => {
         const senderEmail = request.sender.email;
         const senderName = request.sender.name;
         // const recipientEmail = request.recepient.email;
-        const recipientName = request.recepient.name;
+        const recepientName = request.recepient.name;
         const profileUrl = process.env.CLIENT_URL + "/profile/" + request.recepient.username;
 
         try {
-            await sendConnectionAcceptedEmail(senderEmail, senderName, recipientName, profileUrl);
+            await sendConnectionAcceptedEmail(senderEmail, senderName, recepientName, profileUrl);
             
         } catch (error) {
             
@@ -143,7 +143,7 @@ export const getConnectionRequests = async (req, res) => {
     try {
         const userId = req.user._id;
 
-        const requests = await ConnectionRequest.find({ recepient: userId, status: "pending" }).populate("sender", "name username profileImage headline connection");
+        const requests = await ConnectionRequest.find({ recepient: userId, status: "pending" }).populate("sender", "name username profileImage headline connections");
 
         res.status(200).json({requests});
     } catch (error) {
@@ -158,9 +158,9 @@ export const getUserConnections = async (req, res) => {
     try {
         const userId = req.user._id;
 
-        const user = await User.findById(userId).populate("connection", "name username profileImage headline connection");
+        const user = await User.findById(userId).populate("connections", "name username profileImage headline connection");
 
-        res.status(200).json(user.connection);
+        res.status(200).json(user.connections);
     } catch (error) {
 
         console.error("Error in getUserConnections Controller", error);
@@ -174,8 +174,8 @@ export const removeConnection = async (req, res) => {
         const myId = req.user._id;
         const {userId} = req.params;
 
-        await User.findByIdAndUpdate(myId, {$pull: {connection: userId}})
-        await User.findByIdAndUpdate(userId, {$pull: {connection: myId}})
+        await User.findByIdAndUpdate(myId, {$pull: {connections: userId}})
+        await User.findByIdAndUpdate(userId, {$pull: {connections: myId}})
 
         res.status(200).json({ message: "Connection removed successfully" });
     } catch (error) {
