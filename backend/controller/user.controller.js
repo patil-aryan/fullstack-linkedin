@@ -53,6 +53,7 @@ export const updateProfile = async (req, res) => {
             "headline",
             "profileImage",
             "bannerImage",
+            "location",
             "about",
             "experience",
             "education",

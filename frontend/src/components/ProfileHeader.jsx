@@ -3,7 +3,7 @@ import { useState, useMemo } from "react";
 import { Camera, Clock, MapPin, UserCheck, UserPlus, X } from "lucide-react";
 import { axiosInstance } from "../libraries/axios";
 import { toast } from "react-hot-toast";
-import { div } from "framer-motion/client";
+
 
 const ProfileHeader = ({ userData, onSave, isOwnProfile }) => {
 	const [isEditing, setIsEditing] = useState(false);
@@ -153,7 +153,7 @@ const ProfileHeader = ({ userData, onSave, isOwnProfile }) => {
 			<div
 				className='relative h-48 rounded-t-lg bg-cover bg-center'
 				style={{
-					backgroundImage: `url('${editedData.bannerImg || userData.bannerImg || "/banner.png"}')`,
+					backgroundImage: `url('${editedData.bannerImage || userData.bannerImage || "/banner.png"}')`,
 				}}
 			>
 				{isEditing && (
@@ -162,7 +162,7 @@ const ProfileHeader = ({ userData, onSave, isOwnProfile }) => {
 						<input
 							type='file'
 							className='hidden'
-							name='bannerImg'
+							name='bannerImage'
 							onChange={handleImageChange}
 							accept='image/*'
 						/>
@@ -174,7 +174,7 @@ const ProfileHeader = ({ userData, onSave, isOwnProfile }) => {
 				<div className='relative -mt-20 mb-4'>
 					<img
 						className='w-32 h-32 rounded-full mx-auto object-cover'
-						src={editedData.profilePicture || userData.profilePicture || "/avatar.png"}
+						src={editedData.profileImage || userData.profileImage || "/avatar.png"}
 						alt={userData.name}
 					/>
 
@@ -184,7 +184,7 @@ const ProfileHeader = ({ userData, onSave, isOwnProfile }) => {
 							<input
 								type='file'
 								className='hidden'
-								name='profilePicture'
+								name='profileImage'
 								onChange={handleImageChange}
 								accept='image/*'
 							/>
