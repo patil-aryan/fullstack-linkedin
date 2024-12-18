@@ -1,8 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { axiosInstance } from "../../libraries/axios";
 import { Link } from "react-router-dom";
-import { Bell, BriefcaseBusiness, Home, Lock, LogOut, Search, User, Users } from "lucide-react";
-import { a } from "framer-motion/client";
+import {
+  Bell,
+  BriefcaseBusiness,
+  Home,
+  Lock,
+  LogOut,
+  Search,
+  User,
+  Users,
+} from "lucide-react";
 
 const Navbar = () => {
   const { data: authUser } = useQuery({
@@ -52,7 +60,7 @@ const Navbar = () => {
         </div>
       </div> */}
       <nav className="bg-secondary shadow-md sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4">
+        {/* <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center py-3">
             <div className="flex items-center space-x-4">
               <Link to="/">
@@ -66,10 +74,50 @@ const Navbar = () => {
               {authUser && (
                 <>
                   <div className="flex justify-center">
+                    
                     <input
                       type="text"
                       placeholder="Search"
                       className="bg-base-100 text-sm px-8 py-2 rounded focus:outline-none w-full max-w-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                    />
+                  </div>
+                </>
+              )}
+            </div> */}
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex justify-between items-center py-3">
+            <div className="flex items-center space-x-4">
+              <Link to="/">
+                <img
+                  className="h-8 rounded"
+                  src="/small-logo.png"
+                  alt="LinkedIn"
+                />
+              </Link>
+
+              {authUser && (
+                <>
+                  <div className="relative max-w-lg">
+                    <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                      <svg
+                        className="h-4 w-4 text-gray-400"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                      </svg>
+                    </span>
+                    <input
+                      type="text"
+                      placeholder="Search"
+                      className="bg-base-100 text-sm pl-10 pr-4 py-2 rounded focus:outline-none w-full border border-gray-300 focus:ring-2 focus:ring-blue-500 transition-all duration-200"
                     />
                   </div>
                 </>
