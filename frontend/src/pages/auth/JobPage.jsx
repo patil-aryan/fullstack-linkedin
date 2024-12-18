@@ -403,6 +403,143 @@
 
 // export default JobPage;
 
+// import React from 'react';
+// import { useParams, useNavigate } from 'react-router-dom';
+// import { useQuery } from '@tanstack/react-query';
+// import { Toaster, toast } from 'react-hot-toast';
+// import { Loader2, MapPin, Briefcase, XCircle, ArrowLeft } from 'lucide-react';
+// import axios from 'axios';
+
+// // Replace with your Jooble API key
+// const JOOBLE_API_KEY = '0da46dfa-115f-4fc5-9d11-4bdef8b92290';
+
+// const JobPage = () => {
+//   const { jobId } = useParams();
+//   const navigate = useNavigate();
+
+//   const {
+//     data: job,
+//     isLoading,
+//     isError,
+//     error,
+//   } = useQuery({
+//     queryKey: ['job', jobId],
+//     queryFn: async () => {
+//       // API request body
+//       const requestData = {
+//         keywords: '', // Leave empty or use relevant keywords
+//         location: '', // Leave empty for worldwide jobs
+//         id: [jobId], // Pass job ID as an array
+//       };
+
+//       try {
+//         const response = await axios.post(
+//           `https://jooble.org/api/${JOOBLE_API_KEY}`,
+//           requestData,
+//           {
+//             headers: {
+//               'Content-Type': 'application/json',
+//             },
+//           }
+//         );
+
+//         // Log the full API response for debugging
+//         console.log('Jooble API Response:', response.data);
+
+//         if (!response.data || !response.data.jobs || response.data.jobs.length === 0) {
+//           throw new Error('Job not found');
+//         }
+
+//         // Return the first job in the response
+//         return response.data.jobs[0];
+//       } catch (err) {
+//         console.error('Error fetching job:', err.message);
+//         throw new Error(err.message || 'Failed to fetch job data.');
+//       }
+//     },
+//     enabled: !!jobId, // Only run query if jobId is provided
+//   });
+
+//   const handleApply = () => {
+//     if (job?.link) {
+//       window.open(job.link, '_blank'); // Open the job application link
+//       toast.success('Redirecting to application page...');
+//     } else {
+//       toast.error('Application URL not found.');
+//     }
+//   };
+
+//   if (isLoading) {
+//     return (
+//       <div className="flex justify-center items-center min-h-screen">
+//         <Loader2 className="animate-spin text-4xl text-blue-500" />
+//       </div>
+//     );
+//   }
+
+//   if (isError) {
+//     return (
+//       <div className="flex flex-col justify-center items-center min-h-screen">
+//         <XCircle className="text-red-500 text-4xl mb-4" />
+//         <p className="text-lg text-gray-700">
+//           Error loading job: {error.message}
+//         </p>
+//       </div>
+//     );
+//   }
+
+//   if (!job) {
+//     return (
+//       <div className="flex justify-center items-center">
+//         <p className="text-lg text-gray-700">
+//           Jobs not found. Please try again later.
+//         </p>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="container mx-auto p-4">
+//       <Toaster position="top-center" />
+
+//       <button
+//         onClick={() => navigate(-1)}
+//         className="text-blue-500 hover:text-blue-700 mb-4 flex items-center"
+//       >
+//         <ArrowLeft className="mr-1" size={16} />
+//         Back to Results
+//       </button>
+
+//       <div className="bg-white shadow-md rounded-lg p-6">
+//         <h1 className="text-3xl font-bold mb-2">{job.title}</h1>
+//         <div className="flex items-center text-gray-600 mb-4">
+//           <Briefcase className="mr-2" size={18} />
+//           <span>{job.company || 'Company not specified'}</span>
+//           <span className="mx-2">•</span>
+//           <MapPin className="mr-2" size={18} />
+//           <span>{job.location || 'Location not specified'}</span>
+//         </div>
+
+//         <h2 className="text-xl font-semibold mb-4">Job Description</h2>
+//         <div
+//           className="prose prose-blue max-w-none"
+//           dangerouslySetInnerHTML={{ __html: job.snippet || 'No description available.' }}
+//         />
+
+//         <button
+//           onClick={handleApply}
+//           className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full mt-6"
+//         >
+//           Apply Now
+//         </button>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default JobPage;
+
+
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -410,12 +547,11 @@ import { Toaster, toast } from 'react-hot-toast';
 import { Loader2, MapPin, Briefcase, XCircle, ArrowLeft } from 'lucide-react';
 import axios from 'axios';
 
-// Replace with your Jooble API key
-const JOOBLE_API_KEY = '0da46dfa-115f-4fc5-9d11-4bdef8b92290';
-
 const JobPage = () => {
   const { jobId } = useParams();
   const navigate = useNavigate();
+
+  const JOOBLE_API_KEY = '0da46dfa-115f-4fc5-9d11-4bdef8b92290'; // Replace with your API Key
 
   const {
     data: job,
@@ -425,44 +561,38 @@ const JobPage = () => {
   } = useQuery({
     queryKey: ['job', jobId],
     queryFn: async () => {
-      // API request body
-      const requestData = {
-        keywords: '', // Leave empty or use relevant keywords
-        location: '', // Leave empty for worldwide jobs
-        id: [jobId], // Pass job ID as an array
-      };
-
       try {
+        // Jooble API does not provide single job by ID, simulate search filtering
+        const requestData = { keywords: '', location: '' };
+
         const response = await axios.post(
           `https://jooble.org/api/${JOOBLE_API_KEY}`,
           requestData,
           {
-            headers: {
-              'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
           }
         );
 
-        // Log the full API response for debugging
-        console.log('Jooble API Response:', response.data);
+        // Find job by ID in the list
+        const jobs = response.data.jobs || [];
+        const foundJob = jobs.find((job) => job.id === jobId);
 
-        if (!response.data || !response.data.jobs || response.data.jobs.length === 0) {
+        if (!foundJob) {
           throw new Error('Job not found');
         }
 
-        // Return the first job in the response
-        return response.data.jobs[0];
+        return foundJob;
       } catch (err) {
         console.error('Error fetching job:', err.message);
-        throw new Error(err.message || 'Failed to fetch job data.');
+        throw new Error('Failed to load job details');
       }
     },
-    enabled: !!jobId, // Only run query if jobId is provided
+    enabled: !!jobId,
   });
 
   const handleApply = () => {
     if (job?.link) {
-      window.open(job.link, '_blank'); // Open the job application link
+      window.open(job.link, '_blank');
       toast.success('Redirecting to application page...');
     } else {
       toast.error('Application URL not found.');
@@ -481,9 +611,7 @@ const JobPage = () => {
     return (
       <div className="flex flex-col justify-center items-center min-h-screen">
         <XCircle className="text-red-500 text-4xl mb-4" />
-        <p className="text-lg text-gray-700">
-          Error loading job: {error.message}
-        </p>
+        <p className="text-lg text-gray-700">Error: {error.message}</p>
       </div>
     );
   }
@@ -491,9 +619,7 @@ const JobPage = () => {
   if (!job) {
     return (
       <div className="flex justify-center items-center">
-        <p className="text-lg text-gray-700">
-          Jobs not found. Please try again later.
-        </p>
+        <p className="text-lg text-gray-700">Jobs not found. Please try again later!</p>
       </div>
     );
   }
@@ -501,7 +627,6 @@ const JobPage = () => {
   return (
     <div className="container mx-auto p-4">
       <Toaster position="top-center" />
-
       <button
         onClick={() => navigate(-1)}
         className="text-blue-500 hover:text-blue-700 mb-4 flex items-center"
@@ -511,13 +636,19 @@ const JobPage = () => {
       </button>
 
       <div className="bg-white shadow-md rounded-lg p-6">
-        <h1 className="text-3xl font-bold mb-2">{job.title}</h1>
+        <h1 className="text-3xl font-bold mb-2">{job.title || 'No Title'}</h1>
         <div className="flex items-center text-gray-600 mb-4">
           <Briefcase className="mr-2" size={18} />
-          <span>{job.company || 'Company not specified'}</span>
+          <span>{job.company || 'Unknown Company'}</span>
           <span className="mx-2">•</span>
           <MapPin className="mr-2" size={18} />
-          <span>{job.location || 'Location not specified'}</span>
+          <span>{job.location || 'Location Not Specified'}</span>
+        </div>
+
+        <div className="mb-4">
+          <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm font-medium">
+            {job.type || 'Not specified'}
+          </span>
         </div>
 
         <h2 className="text-xl font-semibold mb-4">Job Description</h2>
