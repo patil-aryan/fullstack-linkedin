@@ -6,12 +6,12 @@ import {
 } from "./emailTemplate.js";
 
 export const sendWelcomeEmail = async (email, name, profilUrl) => {
-  const recipients = [{ email }];
+  const recepients = [{ email }];
 
   try {
     const response = await client.send({
       from: sender,
-      to: recipients,
+      to: recepients,
       subject: "Welcome to Unlinked",
       html: createWelcomeEmailTemplate(name, profilUrl),
       category: "Welcome",
@@ -24,21 +24,21 @@ export const sendWelcomeEmail = async (email, name, profilUrl) => {
 };
 
 export const sendCommentNotification = async (
-  recipientEmail,
-  recipientName,
+  recepientEmail,
+  recepientName,
   commenterName,
   postUrl,
   commentContent
 ) => {
-  const recepient = [{ email: recipientEmail }];
+  const recepient = [{ email: recepientEmail }];
 
   try {
     const response = await client.send({
       from: sender,
-      to: recipients,
+      to: recepients,
       subject: "New Comment on Your Post",
       html: createCommentNotificationEmailTemplate(
-        recipientName,
+        recepientName,
         commenterName,
         postUrl,
         commentContent
@@ -52,15 +52,15 @@ export const sendCommentNotification = async (
 };
 
 
-export const sendConnectionAcceptedEmail = async (senderEmail, senderName, recipientName, profileUrl) => {
+export const sendConnectionAcceptedEmail = async (senderEmail, senderName, recepientName, profileUrl) => {
     const recepient = [{ email: senderEmail }];
 
     try {
         const response = await client.send({
             from: sender,   
             to: recepient,
-            subject: `${recipientName} has accepted your connection request`, 
-            html: createConnectionAcceptedEmailTemplate(senderName, recipientName, profileUrl),
+            subject: `${recepientName} has accepted your connection request`, 
+            html: createConnectionAcceptedEmailTemplate(senderName, recepientName, profileUrl),
             category: "Connection_Accepted",
         })
     } catch (error) {

@@ -88,7 +88,7 @@ export const acceptConnectionRequest = async (req, res) => {
 
         const senderEmail = request.sender.email;
         const senderName = request.sender.name;
-        // const recipientEmail = request.recepient.email;
+        // const recepientEmail = request.recepient.email;
         const recepientName = request.recepient.name;
         const profileUrl = process.env.CLIENT_URL + "/profile/" + request.recepient.username;
 

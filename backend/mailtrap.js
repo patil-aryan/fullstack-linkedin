@@ -13,7 +13,7 @@ export const sender = {
   email: process.env.EMAIL_FROM,
   name: process.env.EMAIL_NAME,
 };
-// const recipients = [
+// const recepients = [
 //   {
 //     email: "kenadams00009@gmail.com",
 //   }
@@ -22,7 +22,7 @@ export const sender = {
 // client
 //   .send({
 //     from: sender,
-//     to: recipients,
+//     to: recepients,
 //     subject: "You are awesome!",
 //     text: "Congrats for sending test email with Mailtrap!",
 //     category: "Integration Test",
