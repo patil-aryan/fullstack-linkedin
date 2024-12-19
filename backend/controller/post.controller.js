@@ -111,7 +111,7 @@ export const createComment = async (req, res) => {
 
     if (post.author._id.toString() !== req.user._id.toString()) {
       const newNotification = new Notification({
-        recipient: post.author,
+        recepient: post.author,
         type: "comment",
         relatedUser: req.user._id,
         relatedPost: postId,

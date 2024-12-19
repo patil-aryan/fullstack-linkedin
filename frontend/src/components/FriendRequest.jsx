@@ -33,7 +33,7 @@ const FriendRequest = ({ request }) => {
 			<div className='flex items-center gap-4'>
 				<Link to={`/profile/${request.sender.username}`}>
 					<img
-						src={request.sender.profilePicture || "/avatar.png"}
+						src={request.sender.profileImage || "/avatar.png"}
 						alt={request.name}
 						className='w-16 h-16 rounded-full object-cover'
 					/>

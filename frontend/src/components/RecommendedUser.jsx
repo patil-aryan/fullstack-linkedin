@@ -140,7 +140,7 @@ const RecommendedUser = ({user}) => {
         className="flex items-center flex-grow"
       >
         <img
-          src={user.profilePicture || "./avatar.png"}
+          src={user.profileImage || "./avatar.png"}
           alt={user.name}
           className="w-12 h-12 rounded-full mr-3"
         />

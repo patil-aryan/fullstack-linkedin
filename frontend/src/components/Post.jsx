@@ -177,7 +177,7 @@ const Post = ({ post }) => {
           user: {
             _id: authUser._id,
             name: authUser.name,
-            profilePicture: authUser.profilePicture,
+            profileImage: authUser.profileImage,
           },
           createdAt: new Date(),
         },
@@ -262,7 +262,7 @@ const Post = ({ post }) => {
                   className="mb-2 bg-base-100 p-2 rounded flex items-start"
                 >
                   <img
-                    src={comment.user.profilePicture || "/avatar.png"}
+                    src={comment.user.profileImage || "/avatar.png"}
                     alt={comment.user.name}
                     className="w-8 h-8 rounded-full mr-2 flex-shrink-0"
                   />

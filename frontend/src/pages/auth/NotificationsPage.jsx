@@ -136,7 +136,7 @@ const NotificationsPage = () => {
                       >
                         <img
                           src={
-                            notification.relatedUser.profilePicture ||
+                            notification.relatedUser.profileImage ||
                             "/avatar.png"
                           }
                           alt={notification.relatedUser.name}
